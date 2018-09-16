@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.tycoding.mapper.UserMapper">
+
+    <!-- 创建用户-角色关系 -->
+    <insert id="correlationRoles" parameterType="Long">
+        INSERT INTO sys_users_roles(user_id, role_id) VALUES(#{userId}, #{roleId})
+    </insert>
+
+    <!-- 移除用户-权限之间的关系 -->
+    <delete id="uncorrelationRoles" parameterType="Long">
+        DELETE FROM sys_users_roles WHERE user_id = #{userId} AND role_id = #{roleId}
+    </delete>
+
+    <!-- 根据用户名查询对应的角色 -->
+    <select id="findRoles" parameterType="String" resultType="cn.tycoding.entity.Role">
+        SELECT r.id, r.role, r.description FROM
+        sys_users u, sys_roles r, sys_users_roles ur
+        WHERE
+        u.username = #{username}
+        AND
+        u.id = ur.user_id
+        AND
+        r.id = ur.role_id
+    </select>
+
+    <!-- 根据用户名查找其权限 -->
+    <select id="findPermissions" parameterType="String" resultType="cn.tycoding.entity.Permission">
+        SELECT p.id, p.permission, p.description FROM
+        sys_users u, sys_roles r, sys_permissions p, sys_users_roles ur, sys_roles_permissions rp
+        WHERE
+        u.username = #{username}
+        AND
+        u.id = ur.user_id
+        AND
+        r.id = ur.role_id
+        AND
+        r.id = rp.role_id
+        AND
+        p.id = rp.permission_id
+    </select>
+
+    <!-- 判断指定的用户和角色是否存在 -->
+    <select id="exists" parameterType="Long" resultType="Boolean">
+        SELECT COUNT(1) FROM sys_users_roles WHERE user_id = #{userId} AND role_id = #{roleId}
+    </select>
+
+    <!-- 创建用户 -->
+    <insert id="create" parameterType="cn.tycoding.entity.User">
+        INSERT INTO
+        sys_users(username,password,salt,locked)
+        VALUES
+        (#{username},#{password},#{salt},#{locked})
+    </insert>
+
+    <!-- 移除用户 -->
+    <delete id="delete" parameterType="Long">
+        DELETE FROM sys_users WHERE id = #{id}
+    </delete>
+
+    <!-- 更新用户信息 -->
+    <update id="update" parameterType="cn.tycoding.entity.User">
+        UPDATE sys_users
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="salt != null">
+                salt = #{salt},
+            </if>
+            <if test="roleId != null">
+                role_id = #{roleId},
+            </if>
+            <if test="locked != null ">
+                locked = #{locked},
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+    <!-- 根据ID查询用户 -->
+    <select id="findById" parameterType="Long" resultType="cn.tycoding.entity.User">
+        SELECT * FROM sys_users WHERE id = #{id}
+    </select>
+
+    <!-- 查询所有 -->
+    <select id="findAll" resultType="cn.tycoding.entity.User">
+        SELECT * FROM sys_users
+    </select>
+
+    <!-- 根据用户名查询-->
+    <select id="findByName" parameterType="String" resultType="cn.tycoding.entity.User">
+        SELECT * FROM sys_users WHERE username = #{username}
+    </select>
+
+    <!-- 删除此用户关联的所有角色信息 -->
+    <delete id="deleteAllUserRoles" parameterType="Long">
+        DELETE FROM sys_users_roles WHERE user_id = #{id}
+    </delete>
+
+</mapper>

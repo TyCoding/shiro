@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.tycoding.mapper.RoleMapper">
+
+    <!-- 根据id查询当前角色信息 -->
+    <select id="findById" parameterType="Long" resultType="cn.tycoding.entity.Role">
+        SELECT * FROM sys_roles WHERE id = #{id}
+    </select>
+
+    <!-- 创建角色 -->
+    <insert id="create" parameterType="cn.tycoding.entity.Role">
+        INSERT INTO
+        sys_roles(role, description, available, pid)
+        VALUES(#{role}, #{description}, #{available}, #{pid})
+    </insert>
+
+    <!-- 删除与角色相关的表 -->
+    <delete id="deleteUserRole" parameterType="Long">
+        DELETE FROM sys_users_roles WHERE role_id = #{roleId}
+    </delete>
+
+    <!-- 删除角色表 -->
+    <delete id="deleteRole" parameterType="Long">
+        DELETE FROM sys_roles WHERE id = #{roleId}
+    </delete>
+
+    <!-- 创建角色-权限表 -->
+    <insert id="correlationPermissions" parameterType="Long">
+        INSERT INTO
+        sys_roles_permissions(permission_id, role_id)
+        VALUES(#{permissionId}, #{roleId})
+    </insert>
+
+    <!-- 删除角色-权限表 -->
+    <delete id="uncorrelationPermissions" parameterType="Long">
+        DELETE FROM
+        sys_roles_permissions
+        WHERE
+        role_id = #{roleId}
+        AND
+        permission_id = #{permissionId}
+    </delete>
+
+    <!-- 查询表中是否存在新添加的数据 -->
+    <select id="exists" parameterType="Long" resultType="boolean">
+        SELECT COUNT(1) FROM sys_roles_permissions WHERE role_id = #{roleId} AND permission_id = #{permissionId}
+    </select>
+
+    <!-- 查询所有 -->
+    <select id="findAll" resultType="cn.tycoding.entity.Role">
+        SELECT * FROM sys_roles
+    </select>
+
+    <!-- 根据角色id查询当前role-permission表中关联的数据 -->
+    <select id="findRolePermissionByRoleId" parameterType="Long" resultType="cn.tycoding.entity.Permission">
+        SELECT p.id, p.description
+        FROM sys_permissions p,
+             sys_roles r,
+             sys_roles_permissions rp
+        WHERE r.id = #{id}
+        AND rp.role_id = r.id
+        AND rp.permission_id = p.id;
+    </select>
+
+    <!-- 根据角色id查询permission表中属于此角色节点的子节点权限 -->
+    <select id="findPermissionByRoleId" parameterType="Long" resultType="cn.tycoding.entity.Permission">
+        SELECT id, description, rid
+        FROM sys_permissions
+        WHERE rid = #{id};
+    </select>
+
+    <!-- 更新当前角色数据 -->
+    <update id="update" parameterType="cn.tycoding.entity.Role">
+        UPDATE sys_roles
+        <set>
+            <if test="role != null">
+                role = #{role},
+            </if>
+            <if test="description != null">
+                description = #{description},
+            </if>
+            <if test="pid != null">
+                pid = #{pid},
+            </if>
+            <if test="available != null">
+                available = #{available},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除当前角色关联的所有权限id -->
+    <delete id="deleteAllRolePermissions" parameterType="Long">
+        DELETE FROM sys_roles_permissions WHERE role_id = #{id}
+    </delete>
+
+    <!-- 根据当前角色的更新数据，更新用户表中展示关联角色的字段 -->
+    <update id="updateUserRole_Id" parameterType="cn.tycoding.entity.Role">
+        UPDATE sys_users u, sys_users_roles ur
+        SET u.role_id = #{description}
+        WHERE ur.role_id = #{id}
+          AND u.id = ur.user_id;
+    </update>
+
+</mapper>
