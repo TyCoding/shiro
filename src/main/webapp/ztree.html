@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="static/lib/bootstrap.min.css">
+    <link rel="stylesheet" href="static/lib/css/metroStyle/metroStyle.css">
+    <link rel="stylesheet" href="static/lib/css/demo.css">
+</head>
+<body>
+<div class="zTreeDemoBackground">
+    <ul id="tree" class="ztree"></ul>
+</div>
+</body>
+<script type="text/javascript" src="static/lib/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="static/lib/jquery.ztree.core.min.js"></script>
+<script type="text/javascript" src="static/lib/jquery.ztree.excheck.min.js"></script>
+<script type="text/javascript">
+    var setting = {
+        view: {
+            selectedMulti: false
+        },
+        check: {
+            enable: true,
+        },
+        data: {
+            simpleData: {
+                enable: true,//是否采用简单数据模式
+                idKey: "id",//树节点ID名称
+                pIdKey: "pid",//父节点ID名称
+                rootPId: -1,//根节点ID
+            }
+        }
+    };
+    $(function () {
+        //加载后端构建的ZTree树（节点的数据格式已在后端格式化好了）
+        $.ajax({
+            url: 'data.json',
+            type: 'get',
+            dataType: "json",
+            success: (data) => {
+                console.log(data);
+                $.fn.zTree.init($("#tree"), setting, data);//初始化树节点时，添加同步获取的数据
+                // checkNodes();
+            },
+            error: (data) => {
+                alert(data.message);
+            }
+        });
+    });
+
+    //处理默认选中的方法
+    function checkNodes(){
+        //模拟数据库中已存在的数据（要实现默认选中的数据）
+        var data = [{"id": 21, "name": "总经理", "pid": 0},{"id":'27', "name": "项目经理", "pid": 26}];
+
+        var zTree = $.fn.zTree.getZTreeObj("tree"); //获取zTree对象
+        data.forEach(row => {
+            zTree.selectNode(zTree.getNodeByParam("id", row.id), true, false);
+            zTree.checkNode(zTree.getNodeByParam("id", row.id), true, false);
+        });
+    }
+</script>
+</html>

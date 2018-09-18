@@ -67,11 +67,14 @@ public class LoginController {
             } catch (ExcessiveAttemptsException e) {
                 e.printStackTrace();
                 error = "该账号登录失败次数过多，错误信息：" + e.getMessage();
+            } catch (Exception e){
+                e.printStackTrace();
+                error = "未知错误，错误信息：" + e.getMessage();
             }
         } else {
             error = "请输入用户名和密码";
         }
-        //登录失败，跳转到login页面，这里不做登录成功的处理，由
+        //登录失败，跳转到login页面
         model.addAttribute("error", error);
         return "login";
     }

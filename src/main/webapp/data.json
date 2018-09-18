@@ -1,0 +1,32 @@
+[{  "id": 21,
+  "name": "总经理",
+  "pid": 0,
+  "parent": true
+}, {"id": 26,
+  "name": "技术部",
+  "pid": 0,
+  "parent": true
+}, {
+  "id": 27,
+  "name": "项目经理",
+  "pid": 26,
+  "parent": false
+}, {"id": 28,
+  "name": "项目组组长",
+  "pid": 26,
+  "parent": false
+}, {
+  "id": 29,
+  "name": "安全部",
+  "pid": 0,
+  "parent": true
+}, {"id": 30,
+  "name": "网络安全部负责人",
+  "pid": 29,
+  "parent": false
+}, {
+  "id": 31,
+  "name": "项目安全测试员",
+  "pid": 29,
+  "parent": false
+}]
