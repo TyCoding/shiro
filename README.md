@@ -15,6 +15,8 @@
 
 # 起步
 
+初始化数据库，请参考[/db](https://github.com/TyCoding/shiro/tree/master/db)中的代码
+
 ## 导入依赖
 导入Shiro框架需要的依赖：
 
@@ -735,4 +737,24 @@ public String login(
 
 重新启动项目（或者注销账户），重新进入登录页面，此次不勾选记住我复选框，成功进入系统后关闭浏览器，再次打开浏览器输入`localhost:8080/index.do`发现会再次被拦截跳转到`loginUrl`地址。
 
+# 项目截图
 
+![](README/4.png)
+
+
+
+<br/>
+
+# 交流
+
+如果大家有兴趣，欢迎大家加入我的Java交流群：671017003 ，一起交流学习Java技术。博主目前一直在自学JAVA中，技术有限，如果可以，会尽力给大家提供一些帮助，或是一些学习方法，当然群里的大佬都会积极给新手答疑的。所以，别犹豫，快来加入我们吧！
+
+<br/>
+
+# 联系
+
+If you have some questions after you see this article, you can contact me or you can find some info by clicking these links.
+
+- [Blog@TyCoding's blog](http://www.tycoding.cn)
+- [GitHub@TyCoding](https://github.com/TyCoding)
+- [ZhiHu@TyCoding](https://www.zhihu.com/people/tomo-83-82/activities)
